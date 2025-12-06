@@ -9,7 +9,7 @@ USER = "neo4j"
 PASSWORD = "wnsgk7575"
 
 # JSON 파일 경로
-JSON_PATH = "C:/Users/JUNHA/graph-RAG/sample_docs/jsons/상품요약서_신한(간편가입)굿닥터뇌심치료보험(무배당, 갱신형)_251104.json"  # 네 파일 이름/경로에 맞게 수정
+JSON_PATH = "./sample_docs/jsons/상품요약서_신한(간편가입)굿닥터뇌심치료보험(무배당, 갱신형)_251104.json"  # 네 파일 이름/경로에 맞게 수정
 
 # 이 JSON이 대표하는 상품 ID (네가 규칙 정해서 사용)
 PRODUCT_ID = "PRD_SHLIFE_GOODDOCTOR_EASY_001"
