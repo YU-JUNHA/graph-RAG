@@ -1,5 +1,6 @@
 from config import DEFAULT_PRODUCT_ID
 from graph_client import run_cypher, close_driver
+from graph_context import build_graph_context
 from llm_cypher import generate_cypher
 from llm_answer import generate_answer
 
@@ -42,17 +43,26 @@ def qa_loop(product_id: str) -> None:
             continue
 
         try:
-            # 1) 질문 → Cypher 생성
-            cypher = generate_cypher(question, product_id)
+            # 2단계: 질문을 보고 LLM이 필요한 정보 타입 결정 → 그래프에서 해당 값 조회
+            graph_ctx_text = build_graph_context(question, product_id)
+            print("\n[그래프 컨텍스트]")
+            print(graph_ctx_text)
+
+            # 3단계: 질문 + 그래프 컨텍스트 기반 Cypher 생성
+            cypher = generate_cypher(question, product_id, graph_ctx_text)
             print("\n[생성된 Cypher 쿼리]")
             print(cypher)
 
-            # 2) Neo4j 실행
+            # 4단계: 그래프 실행 + 답변
             rows = run_cypher(cypher, {"product_id": product_id})
             print(f"\n[쿼리 결과 행 수] {len(rows)}")
 
-            # 3) 결과 → 한국어 답변
-            answer = generate_answer(question, cypher, rows)
+            answer = generate_answer(
+                question=question,
+                cypher=cypher,
+                rows=rows,
+                graph_context=graph_ctx_text,  # llm_answer 에서 필요시 활용
+            )
             print("\n[답변]")
             print(answer)
             print("\n" + "-" * 60 + "\n")
